@@ -1,0 +1,11 @@
+/* src/pages/Home.css */
+
+.App {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px; /* Adjust the gap as needed */
+    padding: 20px;
+  }
+  
+  /* Additional styles for Card components can go here */
+  

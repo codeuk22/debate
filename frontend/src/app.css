@@ -1,0 +1,48 @@
+/* src/App.css */
+
+/* Global styles can go here */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+  
+  h1 {
+    text-align: center;
+    background-color: orange;
+    color: white;
+    padding: 10px 0;
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .topic-input-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .topic-input-container input {
+    padding: 10px;
+    font-size: 16px;
+    width: 60%;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .topic-input-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: orange;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .topic-input-container button:hover {
+    background-color: darkorange;
+  }
+  
