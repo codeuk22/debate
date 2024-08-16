@@ -2,12 +2,13 @@ import { Router } from 'express';
 import { makeResponse } from '../lib/response/index.js';
 import { createTopic, deleteTopic, getTopic, getTopics, updateTopic } from '../service/topic.js';
 import { verifyUser } from '../middlewares/jwt.js';
+import { upload } from '../middlewares/multer.middleware.js';
 
 
 const router = Router()
 
 //createtopic
-router.post('/create', verifyUser, async (req, res) => {
+router.post('/create', verifyUser, upload.fields([{ name: 'topicUrl', maxCount: 1 }]), async (req, res) => {
 
     try {
 
@@ -19,7 +20,11 @@ router.post('/create', verifyUser, async (req, res) => {
             return makeResponse(res, 400, false, 'Topic already exists with this name', topicExist);
         }
 
-        const topicCreate = await createTopic({ topicName: topicName, _user: req.user._id });
+        const topicLocalPath = req.files?.profile[0]?.path;
+
+        const upload = await uploadOnCloudinary(topicLocalPath);
+
+        const topicCreate = await createTopic({ topicName: topicName, _user: req.user._id, topicUrl: upload?.url || '' });
 
         await makeResponse(res, 200, true, 'Topic Created Successfully', topicCreate);
 

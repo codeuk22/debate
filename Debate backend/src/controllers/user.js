@@ -1,8 +1,4 @@
-import {
-  validateUserLoginPayload,
-  validateUserPasswordChangePayload,
-  validateUserSignUpPayload,
-} from '../validation/user.js';
+import { validateUserLoginPayload, validateUserPasswordChangePayload, validateUserSignUpPayload } from '../validation/user.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import bcrypt from 'bcrypt';
 import { Router } from 'express';
@@ -10,11 +6,12 @@ import { getUser, createUser, updateUser } from '../service/user.js';
 import { generateAccessToken, verifyUser } from '../middlewares/jwt.js';
 import { makeResponse } from '../lib/response/index.js';
 import { comparePassword } from '../utils/common/index.js';
+import { upload } from '../middlewares/multer.middleware.js';
 
 const router = Router();
 
 //signup controller
-router.post('/signup', validateUserSignUpPayload, async (req, res) => {
+router.post('/signup', validateUserSignUpPayload, upload.fields([{ name: 'profile', maxCount: 1 }]), async (req, res) => {
   try {
     const { name, email, password, contact } = req.body;
 
@@ -97,5 +94,15 @@ router.post('/change-password', verifyUser, validateUserPasswordChangePayload, a
     await makeResponse(res, 400, false, 'Error While Changing Password', error);
   }
 });
+
+router.get('/profile', verifyUser, async (req, res) => {
+
+  try {
+    const user = await getUser({ _id: req.user._id });
+    await makeResponse(res, 200, true, 'Profile Fetched Successfully', user);
+  } catch (error) {
+    await makeResponse(res, 400, false, 'Error While Fetching Profile', error);
+  }
+})
 
 export const userController = router;

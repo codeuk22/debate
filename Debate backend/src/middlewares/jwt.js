@@ -12,7 +12,6 @@ export const generateAccessToken = async (userId) => {
     } catch (error) {
         console.log('Error in generateAccessToken', error)
     }
-
 }
 
 export const verifyUser = async (req, res, next) => {
@@ -21,19 +20,13 @@ export const verifyUser = async (req, res, next) => {
 
         const token = req.cookies?.accessToken || req.header('Authorization')?.replace('Bearer ', '');
 
-        console.log(token)
-
         if (!token) {
             return makeResponse(res, 401, false, 'Access Denied');
         }
 
-        const verifyToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-        console.log('verifyToken', verifyToken)
+        const verifyToken = jwt.verify(token, String(process.env.ACCESS_TOKEN_SECRET));
 
         const user = await getUser({ _id: (verifyToken)?._id, status: 'ACTIVE' });
-
-        console.log('user', user)
 
         if (!user) {
             return makeResponse(res, 404, false, 'User Not Found');

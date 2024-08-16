@@ -4,24 +4,28 @@ import { createComment, deleteComment, getComments, operateLikeOnComment, update
 import { validateCreateCommentPayload } from '../validation/comment.js';
 import { updateTopic } from '../service/topic.js';
 import { verifyUser } from '../middlewares/jwt.js';
+import { upload } from '../middlewares/multer.middleware.js';
 
 const router = Router()
 
 //To create a comment
-router.post('/create', validateCreateCommentPayload, verifyUser, async (req, res) => {
+router.post('/create', validateCreateCommentPayload, verifyUser, upload.fields([{ name: 'commentUrl', maxCount: 1 }]), async (req, res) => {
 
     try {
 
         const { topicId, comment } = req.body;
 
-        const commentCreate = await createComment({ _topic: topicId, comment: comment, _user: req.user._id });
+        const commentLocalPath = req.files?.profile[0]?.path;
+
+        const upload = await uploadOnCloudinary(commentLocalPath);
+
+        const commentCreate = await createComment({ _topic: topicId, comment: comment, _user: req.user._id, commentUrl: upload?.url || '' });
 
         await updateTopic({ _id: topicId }, { $push: { _comment: commentCreate._id } });
 
         await makeResponse(res, 200, true, 'Comment Created Successfully', commentCreate);
 
     } catch (error) {
-        console.log('error', error)
         await makeResponse(res, 400, false, 'Error While Creating Comment', error);
     }
 })

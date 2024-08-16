@@ -13,7 +13,11 @@ router.post('/create', verifyUser, async (req, res) => {
 
         const { commentId, reply } = req.body;
 
-        const replyCreate = await createReply({ _user: req.user._id, _comment: commentId, reply: reply });
+        const replyLocalPath = req.files?.profile[0]?.path;
+
+        const upload = await uploadOnCloudinary(replyLocalPath);
+
+        const replyCreate = await createReply({ _user: req.user._id, _comment: commentId, reply: reply, replyUrl: upload?.url || '' });
 
         await updateComment({ _id: commentId }, { $push: { _reply: replyCreate._id } });
 

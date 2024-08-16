@@ -19,6 +19,9 @@ const commentSchema = new mongoose.Schema(
         ref: 'reply',
       },
     ],
+    commentUrl: {
+      type: String
+    },
     like: [
       {
         type: mongoose.Schema.Types.ObjectId,

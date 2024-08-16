@@ -21,6 +21,9 @@ const topicSchema = new mongoose.Schema(
       type: String,
       enum: ['ACTIVE', 'INACTIVE', 'DELETED'],
       default: 'ACTIVE'
+    },
+    topicUrl: {
+      type: String
     }
   }, { timestamps: true });
 
