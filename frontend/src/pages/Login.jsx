@@ -14,7 +14,6 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}user/login`, data);
-      console.log(response.data);
       if (response?.data?.success) {
         localStorage.setItem("token", response?.data?.data?.token);
         toast.success("Login Successfully!");
@@ -23,8 +22,7 @@ const Login = () => {
         }, 2000)
       }
     } catch (error) {
-      console.error(error.response ? error.response.data : error.message);
-      toast.error(error.message);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -98,7 +96,7 @@ const Login = () => {
                 </div>
               </form>
               <p className="mb-4 text-center">
-                New on futurism?{' '}
+                New on Debate Platform?{' '}
                 <Link to="/signup" className="cursor-pointer text-[#ffa500] no-underline hover:text-indigo-500">Create an account</Link >
               </p>
             </div>

@@ -2,29 +2,30 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { publicRequest } from '../requestMethod';
 
 const Register = () => {
-//   const [mode, setMode] = useState('login');
+  //   const [mode, setMode] = useState('login');
   const { register, handleSubmit } = useForm();
-  const onSubmit =  (data) => {
+  const onSubmit = (data) => {
     try {
-      const response =  axios.post(`${process.env.REACT_APP_API_URL}user/signup`, data);
+      const response = publicRequest.post(`${process.env.REACT_APP_API_URL}user/signup`, data);
       alert("Registered successfully");
-      console.log(data,response);
+      console.log(data, response);
 
     } catch (error) {
-        if (error.response) {
-            console.error("Error Response Data:", error.response.data);
-            console.error("Error Response Status:", error.response.status);
-            console.error("Error Response Headers:", error.response.headers);
-          } else if (error.request) {
-            console.error("Error Request Data:", error.request);
-          } else {
-            console.error("Error Message:", error.message);
-          }
+      if (error.response) {
+        console.error("Error Response Data:", error.response.data);
+        console.error("Error Response Status:", error.response.status);
+        console.error("Error Response Headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Error Request Data:", error.request);
+      } else {
+        console.error("Error Message:", error.message);
+      }
     }
   };
-  
+
 
   return (
     <>
@@ -56,36 +57,36 @@ const Register = () => {
             <div className="flex-auto p-6">
               <div className="mb-10 flex flex-shrink-0 flex-grow-0 items-center justify-center overflow-hidden">
                 <a href="#" className="flex cursor-pointer items-center gap-2 text-indigo-500 no-underline hover:text-indigo-500">
-                  <span className="flex-shrink-0 text-3xl  text-[#ffa500] lowercase tracking-tight opacity-100">Debate Platform</span>
+                  <span className="flex-shrink-0 text-3xl  text-[#ffa500] tracking-tight opacity-100">Debate Platform</span>
                 </a>
               </div>
 
               <h4 className="mb-2 font-medium text-gray-700 xl:text-xl">Welcome to Debate Platform</h4>
-              <p className="mb-6 text-gray-500">Please sign-in to access your account</p>
+              <p className="mb-6 text-gray-500">Please sign-up to create a new account</p>
 
               <form onSubmit={handleSubmit(onSubmit)}>
-                  <>
-                    <div className="mb-4">
-                      <label htmlFor="name" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Name</label>
-                      <input {...register('name')} type="text" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your name" autoFocus />
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="email" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Email</label>
-                      <input {...register('email', { required: true })} type="text" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your email" autoFocus />
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="phone" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Phone</label>
-                      <input {...register('phone', { required: true })} type='number' className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your phone number" autoFocus />
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="password" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Password</label>
-                      <input {...register('password', { required: true })} type="password" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your password" autoFocus />
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="confirmPassword" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Confirm Password</label>
-                      <input {...register('confirmPassword', { required: true })} type="password" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Confirm your password" autoFocus />
-                    </div>
-                  </>
+                <>
+                  <div className="mb-4">
+                    <label htmlFor="name" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Name</label>
+                    <input {...register('name')} type="text" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your name" autoFocus />
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="email" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Email</label>
+                    <input {...register('email', { required: true })} type="text" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your email" autoFocus />
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="phone" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Phone</label>
+                    <input {...register('phone', { required: true })} type='number' className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your phone number" autoFocus />
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="password" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Password</label>
+                    <input {...register('password', { required: true })} type="password" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Enter your password" autoFocus />
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="confirmPassword" className="mb-2 inline-block text-xs font-medium uppercase text-gray-700">Confirm Password</label>
+                    <input {...register('confirmPassword', { required: true })} type="password" className="block w-full cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-2 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" placeholder="Confirm your password" autoFocus />
+                  </div>
+                </>
                 <div className="mb-4">
                   <button className="grid w-full cursor-pointer text-xl select-none rounded-md border border-[#ffa500] bg-[#ffa500] py-2 px-5 text-center align-middle text-sm text-white shadow hover:border-yellow-200 hover:bg-amber-500 hover:text-white focus:border-indigo-600 focus:bg-indigo-600 focus:text-white focus:shadow-none" type="submit">
                     Register
@@ -93,8 +94,8 @@ const Register = () => {
                 </div>
               </form>
               <p className="mb-4 text-center">
-                    Already have an account?{' '}
-                    <Link to="/login" className="cursor-pointer text-indigo-500 no-underline hover:text-indigo-500">Login</Link>
+                Already have an account?{' '}
+                <Link to="/login" className="cursor-pointer text-indigo-500 no-underline hover:text-indigo-500">Login</Link>
               </p>
             </div>
           </div>

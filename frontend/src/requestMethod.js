@@ -6,8 +6,6 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const Token = localStorage.getItem('token');
 
-console.log('toeknssssssss',Token)
-
 export const publicRequest = axios.create({
     baseURL: BASE_URL,
 });
