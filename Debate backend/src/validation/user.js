@@ -9,7 +9,6 @@ export const validateUserSignUpPayload = async (req, res, next) => {
         password: Joi.string().min(8).required().trim(),
         phone: Joi.string().pattern(/^[0-9]{10}$/).required().trim(),
         confirmPassword: Joi.string().required().valid(Joi.ref('password')),
-        profile: Joi.string().optional()
     })
         .required()
         .validate(req.body);

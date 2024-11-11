@@ -17,7 +17,7 @@ export const updateComment = async (search, payload, options = { new: true }) =>
 
 export const deleteComment = async (search) => new Promise((resolve, reject) => {
 
-    commentModel.findOneAndUpdate(search, { status: 'DELETED' })
+    commentModel.findOneAndDelete(search)
         .lean()
         .then(resolve)
         .catch(reject)
@@ -26,6 +26,8 @@ export const deleteComment = async (search) => new Promise((resolve, reject) => 
 export const getComment = async (search) => new Promise(async (resolve, reject) => {
 
     commentModel.findOne(search)
+        .populate('_user', '_comment')
+        .populate('_reply')
         .lean()
         .sort({ createdAt: -1 })
         .then(resolve)

@@ -5,6 +5,7 @@ import { validateCreateCommentPayload } from '../validation/comment.js';
 import { updateTopic } from '../service/topic.js';
 import { verifyUser } from '../middlewares/jwt.js';
 import { upload } from '../middlewares/multer.middleware.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 const router = Router()
 
@@ -35,7 +36,7 @@ router.delete('/delete', verifyUser, async (req, res) => {
 
     try {
         const { topicId, commentId } = req.body;
-
+        console.log('body',req.body,'user',req.user._id);
         const commentDelete = await deleteComment({ _id: commentId, _topic: topicId, _user: req.user._id });
 
         await makeResponse(res, 200, true, 'Comment Deleted Successfully', commentDelete);
@@ -52,6 +53,8 @@ router.put('/update', verifyUser, async (req, res) => {
     try {
 
         const { commentId, comment, topicId } = req.body;
+
+        console.log(commentId, comment, topicId,'user',req.user._id);
 
         const commentUpdate = await updateComment({ _id: commentId, _topic: topicId, _user: req.user._id }, { comment: comment });
 
@@ -95,6 +98,18 @@ router.put('/like', verifyUser, async (req, res) => {
 
     } catch (error) {
         await makeResponse(res, 400, false, 'Error While Fetching Comments', error);
+    }
+});
+
+router.put('/update/comment-url', verifyUser, upload.fields([{ name: 'commentUrl', maxCount: 1 }]), async (req, res) => {
+
+    try {
+        const commentLocalPath = req.files?.commentUrl[0]?.path;
+        const upload = await uploadOnCloudinary(commentLocalPath);
+        const commentUpdate = await updateComment({ _id: req.body.commentId }, { $set: { commentUrl: upload?.url || '' } });
+        await makeResponse(res, 200, true, 'Comment Image Updated Successfully', commentUpdate);
+    } catch (error) {
+        await makeResponse(res, 400, false, 'Error While Updating Comment Image', error);
     }
 });
 

@@ -25,6 +25,7 @@ export const deleteReply = async (search) => new Promise(async (resolve, reject)
 export const getReplies = async (search) => new Promise(async (resolve, reject) => {
 
     replyModel.find(search, { status: 'ACTIVE' })
+        .populate('_user')
         .lean()
         .sort({ createdAt: -1 })
         .then(resolve)

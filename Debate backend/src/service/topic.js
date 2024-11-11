@@ -37,7 +37,7 @@ export const getTopics = async (search) => new Promise(async (resolve, reject) =
 
 export const deleteTopic = async (search) => new Promise((resolve, reject) => {
 
-    topicModel.findOneAndUpdate(search, { status: 'DELETED' })
+    topicModel.findOneAndDelete(search)
         .then(resolve)
         .catch(reject)
 });

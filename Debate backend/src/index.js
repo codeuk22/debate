@@ -24,7 +24,10 @@ connectDB()
     app.listen(process.env.PORT, () => {
       console.log(`Sever is running on port ${process.env.PORT}`);
     });
-  })
+  })  
   .catch((error) => console.log(error));
 
 app.use('/api/v1', router)
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+})

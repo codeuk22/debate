@@ -3,6 +3,8 @@ import { makeResponse } from '../lib/response/index.js';
 import { createReply, deleteReply, getReplies, operateLikeOnReply, updateReply } from '../service/reply.js';
 import { updateComment } from '../service/comment.js';
 import { verifyUser } from '../middlewares/jwt.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
+import { upload } from '../middlewares/multer.middleware.js';
 
 const router = Router()
 
@@ -24,6 +26,7 @@ router.post('/create', verifyUser, async (req, res) => {
         await makeResponse(res, 200, true, 'Reply Created Successfully', replyCreate);
 
     } catch (error) {
+        console.log(error)
         await makeResponse(res, 400, false, 'Error While Creating Reply', error);
     }
 })
@@ -90,6 +93,18 @@ router.put('/like', verifyUser, async (req, res) => {
 
     } catch (error) {
         await makeResponse(res, 400, false, 'Error While like Replies', error);
+    }
+});
+
+router.put('/update/reply-url', verifyUser, upload.fields([{ name: 'replyUrl', maxCount: 1 }]), async (req, res) => {
+
+    try {
+        const replyLocalPath = req.files?.replyUrl[0]?.path;
+        const upload = await uploadOnCloudinary(replyLocalPath);
+        const replyUpdate = await updateReply({ _id: req.body.replyId }, { $set: { replyUrl: upload?.url || '' } });
+        await makeResponse(res, 200, true, 'Reply Image Updated Successfully', replyUpdate);
+    } catch (error) {
+        await makeResponse(res, 400, false, 'Error While Updating Reply Image', error);
     }
 });
 

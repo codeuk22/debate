@@ -6,6 +6,8 @@ export const generateAccessToken = async (userId) => {
 
     try {
 
+        console.log('secret', process.env.ACCESS_TOKEN_SECRET, 'time', process.env.ACCESS_JWT_EXPIRY)
+
         const accessToken = jwt.sign({ _id: userId }, String(process.env.ACCESS_TOKEN_SECRET), { expiresIn: String(process.env.ACCESS_JWT_EXPIRY) });
         return accessToken;
 
@@ -19,6 +21,8 @@ export const verifyUser = async (req, res, next) => {
     try {
 
         const token = req.cookies?.accessToken || req.header('Authorization')?.replace('Bearer ', '');
+
+        console.log('token', token)
 
         if (!token) {
             return makeResponse(res, 401, false, 'Access Denied');

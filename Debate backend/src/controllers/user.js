@@ -11,7 +11,7 @@ import { upload } from '../middlewares/multer.middleware.js';
 const router = Router();
 
 //signup controller
-router.post('/signup', validateUserSignUpPayload, upload.fields([{ name: 'profile', maxCount: 1 }]), async (req, res) => {
+router.post('/signup', upload.fields([{ name: 'profile', maxCount: 1 }]), validateUserSignUpPayload, async (req, res) => {
   try {
     const { name, email, password, contact } = req.body;
 
@@ -21,9 +21,12 @@ router.post('/signup', validateUserSignUpPayload, upload.fields([{ name: 'profil
       return makeResponse(res, 409, false, 'User Already Exists', user);
     }
 
-    const profileLocalPath = req.files?.profile[0]?.path;
+    let upload;
 
-    const upload = await uploadOnCloudinary(profileLocalPath);
+    if (req.files && req.files?.profile) {
+      const profileLocalPath = req.files?.profile[0]?.path;
+      upload = await uploadOnCloudinary(profileLocalPath);
+    }
 
     const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
 
@@ -67,7 +70,6 @@ router.post('/login', validateUserLoginPayload, async (req, res) => {
     await makeResponse(res, 200, true, 'User logged in successfully', { ...user, token: accessToken });
 
   } catch (error) {
-    console.log('error', error)
     await makeResponse(res, 400, false, 'Error While Logging In', error);
   }
 });
@@ -99,10 +101,33 @@ router.get('/profile', verifyUser, async (req, res) => {
 
   try {
     const user = await getUser({ _id: req.user._id });
+    delete user.password;
     await makeResponse(res, 200, true, 'Profile Fetched Successfully', user);
   } catch (error) {
     await makeResponse(res, 400, false, 'Error While Fetching Profile', error);
   }
-})
+});
+
+router.put('/update', verifyUser, async (req, res) => {
+
+  try {
+    const userUpdate = await updateUser({ _id: req.user._id }, { $set: { ...req.body } });
+    await makeResponse(res, 200, true, 'Profile Updated Successfully', userUpdate);
+  } catch (error) {
+    await makeResponse(res, 400, false, 'Error While Updating Profile', error);
+  }
+});
+
+router.put('/update/profile-image', verifyUser, upload.fields([{ name: 'profile', maxCount: 1 }]), async (req, res) => {
+
+  try {
+    const profileLocalPath = req.files?.profile[0]?.path;
+    const upload = await uploadOnCloudinary(profileLocalPath);
+    const userUpdate = await updateUser({ _id: req.user._id }, { $set: { profile: upload?.url || '' } });
+    await makeResponse(res, 200, true, 'Profile Image Updated Successfully', userUpdate);
+  } catch (error) {
+    await makeResponse(res, 400, false, 'Error While Updating Profile Image', error);
+  }
+});
 
 export const userController = router;

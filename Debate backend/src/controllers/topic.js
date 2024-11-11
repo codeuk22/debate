@@ -3,6 +3,7 @@ import { makeResponse } from '../lib/response/index.js';
 import { createTopic, deleteTopic, getTopic, getTopics, updateTopic } from '../service/topic.js';
 import { verifyUser } from '../middlewares/jwt.js';
 import { upload } from '../middlewares/multer.middleware.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 
 const router = Router()
@@ -29,7 +30,6 @@ router.post('/create', verifyUser, upload.fields([{ name: 'topicUrl', maxCount: 
         await makeResponse(res, 200, true, 'Topic Created Successfully', topicCreate);
 
     } catch (error) {
-        console.log('error', error)
         await makeResponse(res, 400, false, 'Error While Creating Topic', error);
     }
 })
@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
 
 
     try {
-        const fetchTopics = await getTopics({ status: 'ACTIVE' });
+        const fetchTopics = await getTopics({});
 
         await makeResponse(res, 200, true, 'Topics Fetched Successfully', fetchTopics);
     } catch (error) {
@@ -88,6 +88,18 @@ router.get('/:commentId', async (req, res) => {
         await makeResponse(res, 400, false, 'Error While Fetching Topic', error);
     }
 
+});
+
+router.put('/update/topic-url', verifyUser, upload.fields([{ name: 'topicUrl', maxCount: 1 }]), async (req, res) => {
+
+    try {
+        const topicLocalPath = req.files?.topicUrl[0]?.path;
+        const upload = await uploadOnCloudinary(topicLocalPath);
+        const topicUpdate = await updateTopic({ _id: req.body.topicId }, { $set: { topicUrl: upload?.url || '' } });
+        await makeResponse(res, 200, true, 'Topic Image Updated Successfully', topicUpdate);
+    } catch (error) {
+        await makeResponse(res, 400, false, 'Error While Updating Topic Image', error);
+    }
 });
 
 export const topicController = router;

@@ -17,11 +17,6 @@ const topicSchema = new mongoose.Schema(
         ref: 'comment',
       },
     ],
-    status: {
-      type: String,
-      enum: ['ACTIVE', 'INACTIVE', 'DELETED'],
-      default: 'ACTIVE'
-    },
     topicUrl: {
       type: String
     }
